@@ -1,0 +1,2 @@
+# Hysteria
+ Hysteria Discord bot
