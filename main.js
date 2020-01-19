@@ -28,8 +28,18 @@ client.on('ready', () => {
     .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
     .catch(console.error);
 });
+client.on('guildCreate', guild => {
+  let dataToPush = {
+
+  }
+});
 client.on('messageDelete', msg => {
   console.log(`A message has been deleted in ${msg.channel}: ${msg.cleanContent}`)
+});
+client.on('messageReactionAdd', react => {
+  if(react.emoji.name === '⭐'){
+    console.log('yep');
+  }
 });
 
 // Code to run once a message is sent
