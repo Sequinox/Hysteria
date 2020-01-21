@@ -3,14 +3,14 @@ module.exports = {
   name: 'avatar',
   description: 'Grab the avatar of a given user. Leave blank to grab your own avatar.',
   arguments: '@mention',
-  run(msg, args){
+  run(msg, args) {
     let embed = new Discord.RichEmbed()
       .setColor('#3dfc89')
-    if(args[0] === undefined){
+    if (args[0] === undefined) {
       embed.setImage(msg.author.avatarURL)
       embed.setAuthor(`${msg.author.username}'s avatar`, msg.author.avatarURL)
       msg.channel.send(embed);
-    } else if(args[0] != undefined && args[0] != 'help') {
+    } else if (args[0] != undefined && args[0] != 'help') {
       let mention = msg.mentions.users.first().displayAvatarURL;
       let user = msg.mentions.users.first();
       user = user.username;
