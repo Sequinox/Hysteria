@@ -3,13 +3,23 @@ const client = new Discord.Client();
 const parser = require('discord-command-parser');
 const generateEmbed = require('better-embed');
 const Cleverbot = require('cleverbot-node');
+const moment = require('moment');
 const fs = require('fs');
-const token = require('./token.json');
+const dbHandler = require('./helpers/userDatabaseHandler');
 
 const prefix = 'm,';
 
 const clbot = new Cleverbot;
 clbot.configure({botapi: "CC1vubgwY60Qku1dJW1Yt8qQrVw"});
+
+const sql = require('sqlite3').verbose()
+const path = require('path');
+const guildPath = path.resolve(__dirname, 'guilds.db');
+let db = new sql.Database(guildPath, sql.OPEN_READWRITE, (err) => {
+	if(err){
+		console.error(`SQL ERROR: ${err.message}`);
+	}
+});
 
 // I stole this code lol ---------------------
 client.commands = new Discord.Collection();
@@ -29,17 +39,50 @@ client.on('ready', () => {
     .catch(console.error);
 });
 client.on('guildCreate', guild => {
-  let dataToPush = {
-
-  }
+	dbHandler.addGuild(guild.id)
 });
 client.on('messageDelete', msg => {
   console.log(`A message has been deleted in ${msg.channel}: ${msg.cleanContent}`)
 });
 client.on('messageReactionAdd', react => {
+	setInterval(function() {
+		db.each(`SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`, function(err, guilds){
+			let guild = client.guilds.get(guilds);
+			db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 5`, function(err, row){
+				let embed = new Discord.RichEmbed()
+				.setColor("#FFD700")
+				.setAuthor(row.author, row.avatarURL)
+				.setTitle('Jump!')
+				.setURL(`https://discordapp.com/channels/${guilds.name}/${row.channelID}/${row.msgID}`)
+				.setDescription(row.message)
+				.setFooter(row.timestamp)
+				if(row.imageURL === "undefined"){
+					react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
+				} else {
+					embed.setImage(row.imageURL)
+					react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
+				}
+				db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 5`, function(err){
+					if(err){
+						cosole.log(err);
+					}
+				});
+			});
+		});
+	}, 5000);
   if(react.emoji.name === '⭐'){
-    console.log('yep');
+		let Attachment = (react.message.attachments).array();
+		if(typeof Attachment[0] === "undefined"){
+			dbHandler.addStar(react.message.guild.id, react.message.author.username, react.message.content, react.message.id, moment().format('MMMM Do, YYYY, h:mm:ss a'), react.message.channel.id);
+		} else {
+			dbHandler.addStar(react.message.guild.id, react.message.author.username, react.message.content, react.message.id, moment().format('MMMM Do, YYYY, h:mm:ss a'), react.message.channel.id, Attachment[0].url);
+		}
   }
+});
+client.on('messageReactionRemove', react => {
+	if(react.emoji.name === '⭐'){
+		dbHandler.removeStar(react.message.guild.id, react.message.id);
+	}
 });
 
 // Code to run once a message is sent
@@ -96,4 +139,5 @@ client.on('message', msg => {
 });
 
 
+const token = require('./token.json');
 client.login(token.token);
