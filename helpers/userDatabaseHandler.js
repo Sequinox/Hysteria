@@ -1,7 +1,7 @@
 const sql = require('sqlite3').verbose()
 const path = require('path');
-const userPath = path.resolve(__dirname, '..', 'users.db');
-const guildPath = path.resolve(__dirname, '..', 'guilds.db');
+const userPath = path.resolve(__dirname, '../databases', 'users.db');
+const guildPath = path.resolve(__dirname, '../databases', 'guilds.db');
 
 let currentValue = 0;
 

@@ -6,7 +6,7 @@ clbot.configure({
 module.exports = {
   name: 'cleverbot',
   description: 'Talk to da homie.',
-  arguments: 'Whatever you wanna say to da homie.',
+  arguments: 'Whatever you wanna say to him.',
   run(msg, args, client) {
     if (args[0] === 'help') return;
     clbot.write(args.join(" "), function(response) {

@@ -18,7 +18,7 @@ module.exports = {
     let updateScript = `UPDATE users
                         SET RespectsPaid = ?
                         WHERE RespectsPaid = ?`;
-    const dbPath = path.resolve(__dirname, '..', 'users.db');
+    const dbPath = path.resolve(__dirname, '../databases', 'users.db');
     let db = new sql.Database(dbPath, sql.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(`SQL ERROR: ${err.message}`);
