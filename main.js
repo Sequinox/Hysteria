@@ -56,7 +56,7 @@ client.on('messageReactionAdd', react => {
   setInterval(function() {
     db.each(`SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`, function(err, guilds) {
       let guild = client.guilds.get(guilds);
-      db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 1`, function(err, row) {
+      db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 5`, function(err, row) {
         let embed = new Discord.RichEmbed()
           .setColor("#FFD700")
           .setAuthor(row.author)
@@ -68,7 +68,7 @@ client.on('messageReactionAdd', react => {
           embed.setImage(row.imageURL)
           react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
         }
-        db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 1`, function(err) {
+        db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 5`, function(err) {
           if (err) {
             cosole.log(err);
           }
