@@ -11,6 +11,8 @@ module.exports = {
   description: 'Pay your respects.',
   arguments: 'mention',
   run(msg, args, client) {
+		args = args.join(" ");
+		console.log(args)
     dbHandler.updateRespects(msg.author.id);
 
     let dummyValue = 1;
@@ -39,7 +41,7 @@ module.exports = {
               embed.setFooter(`Total respects paid: ${output} ; Respects paid by ${msg.author.username}: ${userRespects}`)
               msg.channel.send(embed);
             } else if (args[0] != 'help') {
-              embed.setDescription(`${msg.author.username} has paid their respects for ${args[0]}`)
+              embed.setDescription(`${msg.author.username} has paid their respects for ${args}`)
               embed.setFooter(`Total respects paid: ${output} ; Respects paid by ${msg.author.username}: ${userRespects}`)
               msg.channel.send(embed);
             }

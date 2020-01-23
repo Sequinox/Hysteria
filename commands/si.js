@@ -18,7 +18,7 @@ module.exports = {
     if (args.length === 0) {
       msg.channel.send('You must enter a Rush song!');
     } else {
-      db.each(`SELECT * FROM songs WHERE songName LIKE "%${song}%"`, function(err, row) {
+      db.get(`SELECT * FROM songs WHERE songName LIKE "%${song}%" LIMIT 1`, function(err, row) {
         let embed = new Discord.RichEmbed()
           .setAuthor(`Results for ${row.songName}`, 'https://images-na.ssl-images-amazon.com/images/I/619kZBokm-L._AC_SX355_.jpg', `https://www.youtube.com/watch?v=${row.ID}`)
           .setColor('#3dfc89')
