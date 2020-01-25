@@ -167,4 +167,4 @@ client.on('message', msg => {
 
 
 const token = require('./token.json');
-client.login(token.devToken);
+client.login(token.token);

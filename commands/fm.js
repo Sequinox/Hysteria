@@ -27,24 +27,23 @@ module.exports = {
           limit: 1,
           extended: 1
         }).then(data => {
-					embed.setAuthor(`${row.lastfm} is listening to...`, '', `https://www.last.fm/user/${row.lastfm}`);
+          embed.setAuthor(`${row.lastfm} is listening to...`, '', `https://www.last.fm/user/${row.lastfm}`);
           let image = data.recenttracks.track[0].image[3];
-          let artist = data.recenttracks.track[0].artist.name;
-					if(data.recenttracks.track[0].loved == 1){
-						embed.setFooter(`${row.lastfm} ❤️'s ${data.recenttracks.track[0].name}!`)
-					}
+          if (data.recenttracks.track[0].loved == 1) {
+            embed.setFooter(`${row.lastfm} ❤️'s ${data.recenttracks.track[0].name}!`)
+          }
           if (data.recenttracks.track.length === 1) {
             //In the event that the requested user isn't listening to anything
             embed.addField('Last scrobbled', data.recenttracks.track[0].name, true);
-            embed.addField('Last artist', artist, true)
+            embed.addField('Last artist', data.recenttracks.track[0].artist.name, true)
             embed.setThumbnail(image['#text']);
             msg.channel.send(embed);
           } else if (data.recenttracks.track.length === 2) {
             //In the event that the request user is listening to something
             embed.addField('Currently scrobbling', data.recenttracks.track[0].name, true);
-            embed.addField('Current artist', artist, true);
+            embed.addField('Current artist', data.recenttracks.track[0].artist.name, true);
             embed.addField('Last scrobbled', data.recenttracks.track[1].name, true);
-						embed.addField('Last artist', artist, true);
+            embed.addField('Last artist', data.recenttracks.track[1].artist.name, true);
             embed.setThumbnail(image['#text']);
             msg.channel.send(embed);
           }
