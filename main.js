@@ -37,14 +37,14 @@ for (const file of commandFiles) {
 client.on('ready', () => {
   console.log(`${client.readyAt} : Logged in as ${client.user.tag}!`);
   client.user.setActivity('to you. m,botinfo', {
-      type: 'LISTENING'
-    });
-	client.user.setPresence({
-		game: {
-			type: 'WATCHING',
-			name: 'you.'
-		}
-	})
+    type: 'LISTENING'
+  });
+  client.user.setPresence({
+    game: {
+      type: 'WATCHING',
+      name: 'you.'
+    }
+  })
 });
 client.on('guildCreate', guild => {
   dbHandler.addGuild(guild.id)
@@ -52,30 +52,8 @@ client.on('guildCreate', guild => {
 client.on('messageDelete', msg => {
   console.log(`A message has been deleted in ${msg.channel}: ${msg.cleanContent}`)
 });
+/*
 client.on('messageReactionAdd', react => {
-  setInterval(function() {
-    db.each(`SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`, function(err, guilds) {
-      let guild = client.guilds.get(guilds);
-      db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 5`, function(err, row) {
-        let embed = new Discord.RichEmbed()
-          .setColor("#FFD700")
-          .setAuthor(row.author)
-          .setDescription(row.message)
-          .setFooter(row.timestamp)
-        if (row.imageURL === "undefined") {
-          react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
-        } else {
-          embed.setImage(row.imageURL)
-          react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
-        }
-        db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 5`, function(err) {
-          if (err) {
-            cosole.log(err);
-          }
-        });
-      });
-    });
-  }, 10000);
   if (react.emoji.name === '⭐') {
     let Attachment = (react.message.attachments).array();
     if (typeof Attachment[0] === "undefined") {
@@ -84,13 +62,35 @@ client.on('messageReactionAdd', react => {
       dbHandler.addStar(react.message.guild.id, react.message.author.username, react.message.content, react.message.id, moment().format('MMMM Do, YYYY, h:mm:ss a'), react.message.channel.id, Attachment[0].url);
     }
   }
+
+  db.each(`SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`, function(err, guilds) {
+    let guild = client.guilds.get(guilds);
+    db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 1`, function(err, row) {
+      let embed = new Discord.RichEmbed()
+        .setColor("#FFD700")
+        .setAuthor(row.author)
+        .setDescription(row.message)
+        .setFooter(row.timestamp)
+      if (row.imageURL === "undefined") {
+        react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
+      } else {
+        embed.setImage(row.imageURL)
+        react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
+      }
+      db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 1`, function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+  });
 });
 client.on('messageReactionRemove', react => {
   if (react.emoji.name === '⭐') {
     dbHandler.removeStar(react.message.guild.id, react.message.id);
   }
 });
-
+*/
 // Code to run once a message is sent
 client.on('message', msg => {
   if (msg.author.bot) return;
@@ -150,6 +150,12 @@ client.on('message', msg => {
       case 'botinfo':
         client.commands.get('botinfo').run(msg, args, client);
         break;
+      case 'fm':
+        client.commands.get('fm').run(msg, args, client);
+        break;
+      case 'fmset':
+        client.commands.get('fmset').run(msg, args, client);
+        break;
       default:
         msg.channel.send('huh?');
     }
@@ -161,4 +167,4 @@ client.on('message', msg => {
 
 
 const token = require('./token.json');
-client.login(token.token);
+client.login(token.devToken);
