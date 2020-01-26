@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const color = require('../helpers/colorPicker.js');
 const LastFM = require('lastfm-node-client');
+const lastfmHelper = require('../helpers/lastfm.js')
 const sql = require('sqlite3').verbose();
 const path = require('path');
 const userPath = path.resolve(__dirname, '../databases', 'users.db')
@@ -32,12 +33,28 @@ module.exports = {
           if (data.recenttracks.track[0].loved == 1) {
             embed.setFooter(`${row.lastfm} ❤️'s ${data.recenttracks.track[0].name}!`)
           }
+					const filter = (reaction, user) => {
+						return ['ℹ️'].includes(reaction.emoji.name) && user.id === msg.author.id;
+					};
           if (data.recenttracks.track.length === 1) {
             //In the event that the requested user isn't listening to anything
             embed.addField('Last scrobbled', data.recenttracks.track[0].name, true);
             embed.addField('Last artist', data.recenttracks.track[0].artist.name, true)
             embed.setThumbnail(image['#text']);
-            msg.channel.send(embed);
+            msg.channel.send(embed).then(sentMsg => {
+              sentMsg.react('ℹ️').then(() => {
+								sentMsg.awaitReactions(filter, {
+									max: 1,
+									time: 60000,
+									errors: ['time']
+								}).then(collected => {
+									const reaction = collected.first();
+									if (reaction.emoji.name === 'ℹ️') {
+										lastfmHelper.generateInfoEmbed(msg);
+									}
+								});
+							});
+            });
           } else if (data.recenttracks.track.length === 2) {
             //In the event that the request user is listening to something
             embed.addField('Currently scrobbling', data.recenttracks.track[0].name, true);
@@ -45,7 +62,20 @@ module.exports = {
             embed.addField('Last scrobbled', data.recenttracks.track[1].name, true);
             embed.addField('Last artist', data.recenttracks.track[1].artist.name, true);
             embed.setThumbnail(image['#text']);
-            msg.channel.send(embed);
+            msg.channel.send(embed).then(sentMsg => {
+              sentMsg.react('ℹ️').then(() => {
+								sentMsg.awaitReactions(filter, {
+									max: 1,
+									time: 60000,
+									errors: ['time']
+								}).then(collected => {
+									const reaction = collected.first();
+									if (reaction.emoji.name === 'ℹ️') {
+										lastfmHelper.generateInfoEmbed(msg);
+									}
+								});
+							});
+            });
           }
         });
       });

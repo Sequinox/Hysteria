@@ -36,15 +36,9 @@ for (const file of commandFiles) {
 // Code to run once bot is ready
 client.on('ready', () => {
   console.log(`${client.readyAt} : Logged in as ${client.user.tag}!`);
-  client.user.setActivity('to you. m,botinfo', {
+  client.user.setActivity('you. m,botinfo', {
     type: 'LISTENING'
   });
-  client.user.setPresence({
-    game: {
-      type: 'WATCHING',
-      name: 'you.'
-    }
-  })
 });
 client.on('guildCreate', guild => {
   dbHandler.addGuild(guild.id)
@@ -153,6 +147,9 @@ client.on('message', msg => {
       case 'fm':
         client.commands.get('fm').run(msg, args, client);
         break;
+			case 'fmstats':
+				client.commands.get('fmstats').run(msg, args, client);
+				break;
       case 'fmset':
         client.commands.get('fmset').run(msg, args, client);
         break;

@@ -7,7 +7,7 @@ module.exports = {
   run(msg, args, client) {
     let embed = new Discord.RichEmbed()
       .setColor('#3dfc89')
-      .setAuthor('Hysteria : v0.1.1 - Click to contribute!', 'https://cdn.discordapp.com/avatars/667222783549374474/9acafc12428c1cf4c94cad5df1328915.png?size=2048', 'https://github.com/Sequinox/Hysteria')
+      .setAuthor('Hysteria : v0.2 - Click to contribute!', 'https://cdn.discordapp.com/avatars/667222783549374474/9acafc12428c1cf4c94cad5df1328915.png?size=2048', 'https://github.com/Sequinox/Hysteria')
       .setThumbnail('https://cdn.discordapp.com/avatars/667222783549374474/9acafc12428c1cf4c94cad5df1328915.png?size=2048')
       .setTitle('Your all purpose Rush bot! Crafted with love by Hysterrics. ♥')
       .setDescription('A few notes about Hysteria:')

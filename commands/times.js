@@ -1,30 +1,29 @@
 const Discord = require('discord.js');
 const momentTz = require('moment-timezone');
+const time = require('../helpers/time.js');
+const color = require('../helpers/colorPicker.js');
 
 module.exports = {
   name: 'times',
   description: 'Returns a list of several timezones.',
-  arguments: 'Coming soon!',
+  arguments: 'mention',
   run(msg, args, client) {
-    let timezones = ['America/North_Dakota/New_Salem', 'America/New_York', 'America/Los_Angeles', 'America/Boise', 'America/St_Johns', 'Europe/Stockholm', 'Europe/Dublin', 'Asia/Kolkata', 'Asia/Qatar', 'America/Halifax', 'America/Anchorage', 'Pacific/Honolulu', 'America/Miquelon'];
     let embed = new Discord.RichEmbed()
-      .setColor('#3dfc89')
-      .setAuthor("Here's a list of the current times around the world:")
-      .setThumbnail("http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/clock-icon.png")
-      .addField("HAST (Hawaii-Aleutian Standard Time)", momentTz().tz("Pacific/Honolulu").format('MMMM Do YYYY, h:mm a'))
-      .addField("AKST (Alaska Standard Time)", momentTz().tz("America/Anchorage").format('MMMM Do YYYY, h:mm a'))
-      .addField("PST (Pacific Standard Time)", momentTz().tz("America/Los_Angeles").format('MMMM Do YYYY, h:mm a'))
-      .addField("MST (Mountain Standard Time)", momentTz().tz("America/Boise").format('MMMM Do YYYY, h:mm a'))
-      .addField("CST (Central Standard Time)", momentTz().tz("America/North_Dakota/New_Salem").format('MMMM Do YYYY, h:mm a'))
-      .addField("EST (Eastern Standard Time)", momentTz().tz("America/New_York").format('MMMM Do YYYY, h:mm a'))
-      .addField("AST (Atlantic Standard Time)", momentTz().tz("America/Halifax").format('MMMM Do YYYY, h:mm a'))
-      .addField("NST (Newfoundland Standard Time)", momentTz().tz("America/St_Johns").format('MMMM Do YYYY, h:mm a'))
-      .addField("PMST (Pierre & Miquelon Standard Time)", momentTz().tz("America/Miquelon").format('MMMM Do YYYY, h:mm a'))
-      .addField("GMT (Greenwich Mean Time)", momentTz().tz("Europe/Dublin").format('MMMM Do YYYY, h:mm a'))
-      .addField("CET (Central European Time)", momentTz().tz("Europe/Stockholm").format('MMMM Do YYYY, h:mm a'))
-      .addField("KSA (Arabia Standard Time)", momentTz().tz("Asia/Qatar").format('MMMM Do YYYY, h:mm a'))
-      .addField("IST (Indian Standard Time)", momentTz().tz("Asia/Kolkata").format('MMMM Do YYYY, h:mm a'))
-      .setFooter("Don't see your timezone? Ping Hysterrics to get yours added!")
-		msg.channel.send(embed);
+      .setColor(color.randomColor())
+      .setThumbnail('http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/clock-icon.png')
+    if (args[0] === undefined) {
+      time.getTimes(msg);
+    } else {
+      let user = msg.mentions.members.first();
+      let timezones = ['PST (UTC - 8:00)', 'MST (UTC - 7:00)', 'CST (UTC - 6:00)', 'EST (UTC - 5:00)', 'AST (UTC - 4:00)', 'NST (UTC - 3:30)', 'GMT (UTC)', 'CET (UTC +1:00)', 'EET (UTC + 2:00)', 'IST (UTC +5:30)'];
+      for (let i = 0; i < timezones.length; i++) {
+        if (user.roles.some(role => role.name === timezones[i])) {
+          embed.setTitle(`Current time in ${timezones[i]}`)
+            .setDescription(momentTz().tz(time.timezoneList[timezones[i]]).format('MMMM Do YYYY, h:mm a'))
+						.setFooter(`Checking time for ${user.displayName} who lives in ${timezones[i]}`)
+          msg.channel.send(embed);
+        }
+      }
+    }
   }
 }
