@@ -58,9 +58,10 @@ module.exports = {
           } else if (data.recenttracks.track.length === 2) {
             //In the event that the request user is listening to something
             embed.addField('Currently scrobbling', data.recenttracks.track[0].name, true);
-            embed.addField('Current artist', data.recenttracks.track[0].artist.name, true);
+            embed.addField('by', data.recenttracks.track[0].artist.name, true);
+						embed.addBlankField()
             embed.addField('Last scrobbled', data.recenttracks.track[1].name, true);
-            embed.addField('Last artist', data.recenttracks.track[1].artist.name, true);
+            embed.addField('by', data.recenttracks.track[1].artist.name, true);
             embed.setThumbnail(image['#text']);
             msg.channel.send(embed).then(sentMsg => {
               sentMsg.react('ℹ️').then(() => {
