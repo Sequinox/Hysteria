@@ -1,10 +1,11 @@
-const Discord = require('discord.js');
+const modules = require('../helpers/modules');
+
 module.exports = {
   name: 'avatar',
   description: 'Grab the avatar of a given user. Leave blank to grab your own avatar.',
   arguments: '@mention',
   run(msg, args) {
-    let embed = new Discord.RichEmbed()
+    let embed = new modules.Discord.RichEmbed()
       .setColor('#3dfc89')
     if (args[0] === undefined) {
       embed.setImage(msg.author.avatarURL)

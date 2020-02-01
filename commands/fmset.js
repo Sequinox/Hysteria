@@ -1,14 +1,12 @@
-const LastFM = require('lastfm-node-client');
-const sql = require('sqlite3').verbose();
-const path = require('path');
-const userPath = path.resolve(__dirname, '../databases', 'users.db');
+const modules = require('../helpers/modules');
+const userPath = modules.path.resolve(__dirname, '../databases', 'users.db');
 
 module.exports = {
   name: 'fmset',
   description: 'Set your last.fm username.',
   arguments: 'last.fm user',
   run(msg, args, client) {
-    let db = new sql.Database(userPath, sql.OPEN_READWRITE, (err) => {
+    let db = new modules.sql.Database(userPath, modules.sql.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(`SQL ERROR: ${err.message}`);
       }

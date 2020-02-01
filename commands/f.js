@@ -1,9 +1,6 @@
-const Discord = require('discord.js');
-const sql = require('sqlite3').verbose()
-const path = require('path');
-const dbHandler = require('../helpers/userDatabaseHandler');
+const modules = require('../helpers/modules');
 
-let embed = new Discord.RichEmbed()
+let embed = new modules.Discord.RichEmbed()
   .setColor('#4D4D4D')
 
 module.exports = {
@@ -12,16 +9,15 @@ module.exports = {
   arguments: 'mention',
   run(msg, args, client) {
 		args = args.join(" ");
-		console.log(args)
-    dbHandler.updateRespects(msg.author.id);
+    modules.dbHandler.updateRespects(msg.author.id);
 
     let dummyValue = 1;
     let userRespects = 1;
     let updateScript = `UPDATE users
                         SET RespectsPaid = ?
                         WHERE RespectsPaid = ?`;
-    const dbPath = path.resolve(__dirname, '../databases', 'users.db');
-    let db = new sql.Database(dbPath, sql.OPEN_READWRITE, (err) => {
+    const dbPath = modules.path.resolve(__dirname, '../databases', 'users.db');
+    let db = new modules.sql.Database(dbPath, modules.sql.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(`SQL ERROR: ${err.message}`);
       }

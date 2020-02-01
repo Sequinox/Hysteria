@@ -23,7 +23,6 @@ module.exports = {
         db.get('SELECT RespectsPaid FROM users WHERE userID = ?', user, (err, rows) => {
           currentValue = rows.RespectsPaid
           let data = [currentValue + 1, user]
-          console.log(data)
           db.run('UPDATE users SET RespectsPaid = ? WHERE userID = ?', data, function(err) {
 
           });

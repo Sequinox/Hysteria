@@ -1,15 +1,12 @@
-const Discord = require('discord.js');
-const sql = require('sqlite3').verbose();
-const path = require('path');
-const albumArt = require('album-art');
-const songPath = path.resolve(__dirname, '../databases', 'songs.db');
+const modules = require('../helpers/modules');
+const songPath = modules.path.resolve(__dirname, '../databases', 'songs.db');
 
 module.exports = {
   name: 'si',
   description: 'Fetch the info for any Rush song.',
   arguments: 'song',
   run(msg, args) {
-    let db = new sql.Database(songPath, sql.OPEN_READWRITE, (err) => {
+    let db = new modules.sql.Database(songPath, modules.sql.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(`SQL ERROR: ${err.message}`);
       }
@@ -19,7 +16,7 @@ module.exports = {
       msg.channel.send('You must enter a Rush song!');
     } else {
       db.get(`SELECT * FROM songs WHERE songName LIKE "%${song}%" LIMIT 1`, function(err, row) {
-        let embed = new Discord.RichEmbed()
+        let embed = new modules.Discord.RichEmbed()
           .setAuthor(`Results for ${row.songName}`, 'https://images-na.ssl-images-amazon.com/images/I/619kZBokm-L._AC_SX355_.jpg', `https://www.youtube.com/watch?v=${row.ID}`)
           .setColor('#3dfc89')
           .addField('Album', row.album, true)

@@ -1,24 +1,19 @@
-const Discord = require('discord.js');
-const color = require('../helpers/colorPicker.js');
-const LastFM = require('lastfm-node-client');
-const lastfmHelper = require('../helpers/lastfm.js')
-const sql = require('sqlite3').verbose();
-const path = require('path');
-const userPath = path.resolve(__dirname, '../databases', 'users.db')
+const modules = require('../helpers/modules');
+const userPath = modules.path.resolve(__dirname, '../databases', 'users.db')
 
 module.exports = {
   name: 'fm',
   description: 'Grab information from last.fm.',
   arguments: 'last.fm user',
   run(msg, args, client) {
-    let embed = new Discord.RichEmbed()
-      .setColor(color.randomColor());
-    let db = new sql.Database(userPath, sql.OPEN_READWRITE, (err) => {
+    let embed = new modules.Discord.RichEmbed()
+      .setColor(modules.color.randomColor());
+    let db = new modules.sql.Database(userPath, modules.sql.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(`SQL ERROR: ${err.message}`);
       }
     });
-    const lastfm = new LastFM('c31eeb95bb18e4adf49a42ef3c92d36c', '0df50f6de311ccdb787216cc548b1269', 'Hysteria');
+    const lastfm = new modules.LastFM('c31eeb95bb18e4adf49a42ef3c92d36c', '0df50f6de311ccdb787216cc548b1269', 'Hysteria');
     if (args[0] != undefined) {
       //return lastfm info of args
     } else {

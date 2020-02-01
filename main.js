@@ -1,31 +1,24 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const parser = require('discord-command-parser');
-const generateEmbed = require('better-embed');
-const Cleverbot = require('cleverbot-node');
-const moment = require('moment');
-const fs = require('fs');
-const dbHandler = require('./helpers/userDatabaseHandler');
+const modules = require('./helpers/modules')
+const client = new modules.Discord.Client();
+const error = modules.chalk.bold.red;
 
 const prefix = 'm,';
 
-const clbot = new Cleverbot;
+const clbot = new modules.Cleverbot;
 clbot.configure({
   botapi: "CC1vubgwY60Qku1dJW1Yt8qQrVw"
 });
 
-const sql = require('sqlite3').verbose()
-const path = require('path');
-const guildPath = path.resolve(__dirname, './databases', 'guilds.db');
-let db = new sql.Database(guildPath, sql.OPEN_READWRITE, (err) => {
+const guildPath = modules.path.resolve(__dirname, './databases', 'guilds.db');
+let db = new modules.sql.Database(guildPath, modules.sql.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(`SQL ERROR: ${err.message}`);
   }
 });
 
 // I stole this code lol ---------------------
-client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+client.commands = new modules.Discord.Collection();
+const commandFiles = modules.fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
@@ -34,134 +27,63 @@ for (const file of commandFiles) {
 
 
 // Code to run once bot is ready
-client.on('ready', () => {
-  console.log(`${client.readyAt} : Logged in as ${client.user.tag}!`);
-  client.user.setActivity('you. m,botinfo', {
-    type: 'LISTENING'
-  });
-});
-client.on('guildCreate', guild => {
-  dbHandler.addGuild(guild.id)
-});
-client.on('messageDelete', msg => {
-  console.log(`A message has been deleted in ${msg.channel}: ${msg.cleanContent}`)
-});
-/*
-client.on('messageReactionAdd', react => {
-  if (react.emoji.name === '⭐') {
-    let Attachment = (react.message.attachments).array();
-    if (typeof Attachment[0] === "undefined") {
-      dbHandler.addStar(react.message.guild.id, react.message.author.username, react.message.content, react.message.id, moment().format('MMMM Do, YYYY, h:mm:ss a'), react.message.channel.id);
-    } else {
-      dbHandler.addStar(react.message.guild.id, react.message.author.username, react.message.content, react.message.id, moment().format('MMMM Do, YYYY, h:mm:ss a'), react.message.channel.id, Attachment[0].url);
-    }
-  }
-
-  db.each(`SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`, function(err, guilds) {
-    let guild = client.guilds.get(guilds);
-    db.each(`SELECT message, timestamp, author, msgID, channelID, imageURL FROM "${guilds.name}" WHERE stars >= 1`, function(err, row) {
-      let embed = new Discord.RichEmbed()
-        .setColor("#FFD700")
-        .setAuthor(row.author)
-        .setDescription(row.message)
-        .setFooter(row.timestamp)
-      if (row.imageURL === "undefined") {
-        react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
-      } else {
-        embed.setImage(row.imageURL)
-        react.message.guild.channels.find(channel => channel.name === "starboard").send(embed);
-      }
-      db.run(`DELETE FROM "${guilds.name}" WHERE stars >= 1`, function(err) {
-        if (err) {
-          console.log(err);
-        }
-      });
+client
+  .on('ready', () => {
+    console.log(`${modules.chalk.green.underline(client.readyAt)} : Logged in as ${client.user.tag}!`);
+    client.user.setActivity('you. m,botinfo', {
+      type: 'LISTENING'
     });
-  });
-});
-client.on('messageReactionRemove', react => {
-  if (react.emoji.name === '⭐') {
-    dbHandler.removeStar(react.message.guild.id, react.message.id);
-  }
-});
-*/
-// Code to run once a message is sent
+  })
+  .on('guildCreate', guild => {
+    modules.dbHandler.addGuild(guild.id)
+  })
+  .on('messageDelete', msg => {
+    console.log(`A message has been deleted in ${msg.channel}: ${msg.cleanContent}`)
+  })
+  .on('guildMemberRemove', member => {
+    if (member.guild.id === '265257036512493578') {
+      client.channels.get('265257184022102018').send(`${member.displayName} has decided they dislike Rush and has returned to the Netherworld!`);
+    }
+  })
+
+//Code to run once a message is sent
 client.on('message', msg => {
   if (msg.author.bot) return;
+
+	//DM Cleverbot functionality
   if (msg.channel.type === 'dm') {
     clbot.write(msg.content, function(response) {
       msg.channel.send(response.output);
     });
   }
-  let parsed = parser.parse(msg, prefix, [false]);
-  let args = parsed.arguments;
-  let command = parsed.command.toLowerCase();
-  if (!parsed.success) return;
-  try {
-    if (args[0] === 'help') {
-      let commandName = client.commands.get(command).name;
-      let parsedCommandName = commandName.charAt(0).toUpperCase() + commandName.substring(1);
-      let description = client.commands.get(command).description;
-      let arguments = client.commands.get(command).arguments;
-      let helpEmbed = new Discord.RichEmbed()
-        .setAuthor(`${parsedCommandName} : Help`, 'https://img.icons8.com/carbon-copy/2x/question-mark.png')
-        .setColor('#3dfc89')
-        .addField('Description', description)
-        .addField('Arguments', arguments)
 
-      msg.channel.send(helpEmbed);
-    }
-  } catch (err) {
-    msg.channel.send('Error!');
-    console.log(`Error parsing argument: ${args} \nError: ${err}`);
-  }
+	//Parses message into an object
+  let parsed = modules.parser.parse(msg, prefix, [false]);
+	if (!parsed.success) return;
+
+
+  let args = parsed.arguments; //An array of every argument passed
+  let command = parsed.command.toLowerCase();
+
+	//Finally, actually run the command
   try {
-    switch (command) {
-      case 'ping':
-        client.commands.get('ping').run(msg, args, client);
-        break;
-      case 'avatar':
-        client.commands.get('avatar').run(msg, args, client);
-        break;
-      case 'cleverbot':
-        client.commands.get('cleverbot').run(msg, args, client);
-        break;
-      case 'f':
-        client.commands.get('f').run(msg, args, client);
-        break;
-      case 'shuffle':
-        client.commands.get('shuffle').run(msg, args, client);
-        break;
-      case 'si':
-        client.commands.get('si').run(msg, args, client);
-        break;
-      case 'invite':
-        client.commands.get('invite').run(msg, args, client);
-        break;
-      case 'times':
-        client.commands.get('times').run(msg, args, client);
-        break;
-      case 'botinfo':
-        client.commands.get('botinfo').run(msg, args, client);
-        break;
-      case 'fm':
-        client.commands.get('fm').run(msg, args, client);
-        break;
-			case 'fmstats':
-				client.commands.get('fmstats').run(msg, args, client);
-				break;
-      case 'fmset':
-        client.commands.get('fmset').run(msg, args, client);
-        break;
-      default:
-        msg.channel.send('huh?');
+		let cmd = client.commands.get(command);
+    if (args[0] === 'help') {
+			modules.embeds.help(msg, cmd)
+    } else if (args[0] != 'help') {
+      try {
+        cmd.run(msg, args, client);
+      } catch (err) {
+        modules.embeds.throwError(msg, args, 'There was an error running the command. If you entered a command that was supposed to work, contact a developer.')
+        console.log(error(`Error running command: ${command} \nError: ${err}`));
+      }
     }
   } catch (err) {
-    msg.channel.send('Error!');
-    console.log(`Error running command: ${command} \nError: ${err}`);
+    modules.embeds.throwError(msg, args, 'Cannot pull help for an unrecognized command.');
+    console.log(error(`Error running help command: ${args} \nError: ${err}`));
   }
 });
 
 
 const token = require('./token.json');
-client.login(token.devToken);
+client.login(token.token);

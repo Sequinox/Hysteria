@@ -1,8 +1,10 @@
-const Cleverbot = require('cleverbot-node');
-const clbot = new Cleverbot;
+const modules = require('../helpers/modules');
+
+const clbot = new modules.Cleverbot;
 clbot.configure({
   botapi: "CC1vubgwY60Qku1dJW1Yt8qQrVw"
 });
+
 module.exports = {
   name: 'cleverbot',
   description: 'Talk to da homie.',
