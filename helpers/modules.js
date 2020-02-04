@@ -15,5 +15,5 @@ module.exports = {
 	momentTz: require('moment-timezone'),
 	albumArt : require('album-art'),
 	time : require('./time'),
-	chalk : require('chalk')
+	chalk : require('chalk'),
 }
