@@ -36,7 +36,7 @@ module.exports = {
             if (err) {
               console.log(err)
             }
-           msg.channel.send('Username updated!')
+            msg.channel.send('Username updated!')
           })
         }
       })
