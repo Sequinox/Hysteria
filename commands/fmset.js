@@ -31,13 +31,14 @@ module.exports = {
               msg.channel.send('Username updated!')
             })
           })
+        } else {
+          db.run(`UPDATE users SET lastfm = "${args[0]}" WHERE userID = ${msg.author.id}`, function (err) {
+            if (err) {
+              console.log(err)
+            }
+           msg.channel.send('Username updated!')
+          })
         }
-        db.run(`UPDATE users SET lastfm = "${args[0]}" WHERE userID = ${msg.author.id}`, function (err) {
-          if (err) {
-            console.log(err)
-          }
-          msg.channel.send('Username updated!')
-        })
       })
     }
   }
