@@ -11,7 +11,7 @@ module.exports = {
 
 	embed.setDescription(`${msg.author.username} has smoked those meats.`);
 	embed.setFooter(`Dont forget that SWEET baby rays!`);
-	embed.setImage('https://images-na.ssl-images-amazon.com/images/I/81YSZkz4wzL._AC_SX522_.jpg');
+	embed.setImage('https://i.imgur.com/3nlAsPU.jpg');
 	msg.channel.send(embed);
 
   }
