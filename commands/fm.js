@@ -38,7 +38,11 @@ module.exports = {
             // In the event that the requested user isn't listening to anything
             embed.addField('Last scrobbled', data.recenttracks.track[0].name, true)
             embed.addField('Last artist', data.recenttracks.track[0].artist.name, true)
-            embed.setThumbnail(image['#text'])
+            if (data.recenttracks.track[0].artist.name == "King Crimson"){
+              embed.setThumbnail("https://i.imgur.com/CJd1OW9.png")
+            } else {
+              embed.setThumbnail(image['#text'])
+            }
             msg.channel.send(embed).then(sentMsg => {
               sentMsg.react('ℹ️').then(() => {
                 sentMsg.awaitReactions(filter, {
@@ -60,7 +64,11 @@ module.exports = {
             embed.addBlankField()
             embed.addField('Last scrobbled', data.recenttracks.track[1].name, true)
             embed.addField('by', data.recenttracks.track[1].artist.name, true)
-            embed.setThumbnail(image['#text'])
+            if (data.recenttracks.track[0].artist.name == "King Crimson"){
+              embed.setThumbnail("https://i.imgur.com/CJd1OW9.png")
+            } else {
+              embed.setThumbnail(image['#text'])
+            }
             msg.channel.send(embed).then(sentMsg => {
               sentMsg.react('ℹ️').then(() => {
                 sentMsg.awaitReactions(filter, {
