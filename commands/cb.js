@@ -7,6 +7,7 @@ clbot.configure({
 
 module.exports = {
   name: 'cleverbot',
+  aliases: ['cb'],
   description: 'Talk to da homie.',
   arguments: 'Whatever you wanna say to him.',
   run (msg, args, client) {

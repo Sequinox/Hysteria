@@ -5,6 +5,7 @@ const embed = new modules.Discord.RichEmbed()
 
 module.exports = {
   name: 'f',
+  aliases: [],
   description: 'Pay your respects.',
   arguments: 'mention',
   run (msg, args, client) {

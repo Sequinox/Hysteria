@@ -1,5 +1,6 @@
 module.exports = {
   name: 'invite',
+  aliases: [],
   description: 'Invite Hysteria to your server!',
   arguments: 'none',
   run (msg, args, client) {

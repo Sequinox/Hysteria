@@ -32,6 +32,7 @@ module.exports = {
       .addField('CET (Central European Time)', momentTz().tz('Europe/Stockholm').format('MMMM Do YYYY, h:mm a'))
       .addField('KSA (Arabia Standard Time)', momentTz().tz('Asia/Qatar').format('MMMM Do YYYY, h:mm a'))
       .addField('IST (Indian Standard Time)', momentTz().tz('Asia/Kolkata').format('MMMM Do YYYY, h:mm a'))
+      .addField('AEST (Australian Eastern Standard Time)', momentTz().tz('Australia/Sydney').format('MMMM Do YYYY, h:mm a'))
       .setFooter("Don't see your timezone? Ping Hysterrics to get yours added!")
     msg.channel.send(embed)
   }

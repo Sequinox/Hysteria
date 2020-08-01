@@ -3,6 +3,7 @@ const userPath = modules.path.resolve(__dirname, '../databases', 'users.db')
 
 module.exports = {
   name: 'fm',
+  aliases: [],
   description: 'Grab information from last.fm.',
   arguments: 'last.fm user',
   run (msg, args, client) {
@@ -26,7 +27,7 @@ module.exports = {
           limit: 1,
           extended: 1
         }).then(data => {
-          embed.setAuthor(`${row.lastfm} is listening to...`, '', `https://www.last.fm/user/${row.lastfm}`)
+          embed.setAuthor(`${row.lastfm} is listening to...`, msg.author.avatarURL, `https://www.last.fm/user/${row.lastfm}`)
           const image = data.recenttracks.track[0].image[3]
           if (data.recenttracks.track[0].loved === 1) {
             embed.setFooter(`${row.lastfm} ❤️'s ${data.recenttracks.track[0].name}!`)
@@ -54,24 +55,29 @@ module.exports = {
               })
             })
           } else if (data.recenttracks.track.length === 2) {
-            // In the event that the request user is listening to something
-            embed.addField('Currently scrobbling', data.recenttracks.track[0].name, true)
-            embed.addField('by', data.recenttracks.track[0].artist.name, true)
-            embed.addBlankField()
-            embed.addField('Last scrobbled', data.recenttracks.track[1].name, true)
-            embed.addField('by', data.recenttracks.track[1].artist.name, true)
-            embed.setThumbnail(image['#text'])
-            msg.channel.send(embed).then(sentMsg => {
-              sentMsg.react('ℹ️').then(() => {
-                sentMsg.awaitReactions(filter, {
-                  max: 1,
-                  time: 60000,
-                  errors: ['time']
-                }).then(collected => {
-                  const reaction = collected.first()
-                  if (reaction.emoji.name === 'ℹ️') {
-                    modules.lastfmHelper.generateInfoEmbed(msg)
-                  }
+            // In the event that the requested user is listening to something
+            lastfm.albumGetTopTags({
+              artist: data.recenttracks.track[0].artist.name,
+              album: data.recenttracks.track[0].album['#text']
+            }).then(albumData => {
+              embed.setDescription(`${data.recenttracks.track[0].album['#text']} | ${albumData.toptags.tag[0].name}, ${albumData.toptags.tag[1].name}, ${albumData.toptags.tag[2].name}`)
+              embed.setTitle(`${data.recenttracks.track[0].name} | ${data.recenttracks.track[0].artist.name}`)
+              embed.setURL(`${data.recenttracks.track[0].url}`)
+              embed.addField('Last scrobbled', data.recenttracks.track[1].name, true)
+              embed.addField('by', data.recenttracks.track[1].artist.name, true)
+              embed.setThumbnail(image['#text'])
+              msg.channel.send(embed).then(sentMsg => {
+                sentMsg.react('ℹ️').then(() => {
+                  sentMsg.awaitReactions(filter, {
+                    max: 1,
+                    time: 60000,
+                    errors: ['time']
+                  }).then(collected => {
+                    const reaction = collected.first()
+                    if (reaction.emoji.name === 'ℹ️') {
+                      modules.lastfmHelper.generateInfoEmbed(msg)
+                    }
+                  })
                 })
               })
             })

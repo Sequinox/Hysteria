@@ -3,6 +3,7 @@ const songPath = modules.path.resolve(__dirname, '../databases', 'songs.db')
 
 module.exports = {
   name: 'si',
+  aliases: [],
   description: 'Fetch the info for any Rush song.',
   arguments: 'song',
   run (msg, args) {

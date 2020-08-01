@@ -2,6 +2,7 @@ const modules = require('../helpers/modules')
 
 module.exports = {
   name: 'fmstats',
+  aliases: [],
   description: 'Grab information about a last.fm user',
   arguments: 'last.fm user',
   run (msg, args, client) {

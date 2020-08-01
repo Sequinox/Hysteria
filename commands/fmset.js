@@ -3,6 +3,7 @@ const userPath = modules.path.resolve(__dirname, '../databases', 'users.db')
 
 module.exports = {
   name: 'fmset',
+  aliases: [],
   description: 'Set your last.fm username.',
   arguments: 'last.fm user',
   run (msg, args, client) {

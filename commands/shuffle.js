@@ -3,6 +3,7 @@ const songPath = modules.path.resolve(__dirname, '../databases', 'songs.db')
 
 module.exports = {
   name: 'shuffle',
+  aliases: [],
   description: 'Returns a random Rush song.',
   arguments: 'none',
   run (msg, args) {

@@ -40,6 +40,12 @@ client
 
 // Code to run once a message is sent
 client.on('message', msg => {
+  // Kinda hacky way to bypass prefix for ONLY the fm command so long as its in music-of-the-spheres
+  if (msg.content === 'fm' && msg.channel.id === '265457421927841793') {
+    console.log('running')
+    const fm = client.commands.get('fm')
+    fm.run(msg, '', client)
+  }
   if (msg.author.bot) return
 
   // DM Cleverbot functionality
@@ -54,11 +60,23 @@ client.on('message', msg => {
   if (!parsed.success) return
 
   const args = parsed.arguments // An array of every argument passed
-  const command = parsed.command.toLowerCase()
+  const command = parsed.command.toLowerCase() // This is the command that the user wants to run, whether is exists or not.
 
   // Finally, actually run the command
   try {
     const cmd = client.commands.get(command)
+    // Help functionality
+    const helpEmbed = new Discord.RichEmbed()
+    if (command === 'help') {
+      const commandsList = client.commands.array()
+      for (let i = 0; i < commandsList.length; i++) {
+        helpEmbed.setColor(0x3dfc89)
+        helpEmbed.setAuthor('Here is a list of commands. Run m,help <command> for more info on each command.', 'https://p7.hiclipart.com/preview/575/670/335/computer-icons-information-download-information.jpg')
+        helpEmbed.addField(commandsList[i].name, commandsList[i].description)
+      }
+      msg.channel.send(helpEmbed)
+      return
+    }
     if (args[0] === 'help') {
       modules.embeds.help(msg, cmd)
     } else if (args[0] !== 'help') {
@@ -76,4 +94,5 @@ client.on('message', msg => {
 })
 
 const token = require('./token.json')
-client.login(token.token)
+const { Discord } = require('./helpers/modules')
+client.login(token.devToken)

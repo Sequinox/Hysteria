@@ -11,6 +11,7 @@ const embed = new modules.Discord.RichEmbed()
 
 module.exports = {
   name: 'grill',
+  aliases: [],
   description: 'Grill.',
   arguments: 'mention',
   run (msg, args, client) {

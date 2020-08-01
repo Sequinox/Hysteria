@@ -2,7 +2,8 @@ const modules = require('../helpers/modules')
 
 module.exports = {
   name: 'times',
-  description: 'Returns a list of several timezones.',
+  aliases: [],
+  description: 'Returns a list of several timezones. You can also check the time of another user!',
   arguments: 'mention',
   run (msg, args, client) {
     const embed = new modules.Discord.RichEmbed()

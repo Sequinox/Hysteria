@@ -2,6 +2,7 @@ const modules = require('../helpers/modules')
 
 module.exports = {
   name: 'botinfo',
+  aliases: [],
   description: 'Information for Hysteria.',
   arguments: 'none',
   run (msg, args, client) {

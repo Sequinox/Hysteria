@@ -2,6 +2,7 @@ const modules = require('../helpers/modules')
 
 module.exports = {
   name: 'ping',
+  aliases: [],
   description: 'Returns the response time of the bot.',
   arguments: 'none',
   run (msg, args, client) {
